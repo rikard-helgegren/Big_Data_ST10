@@ -5,6 +5,15 @@ import random
 from sklearn.ensemble import RandomForestClassifier
 
 
+def successRate(pred, true):
+    n = len(pred)
+    n_right = 0
+    for i in range(0, n):
+        if pred[i] == true[i]:
+            n_right += 1
+    return n_right/n
+
+
 def mislabel(df, p):
     labels = df['Names']
     labelSet = list(set(labels))
@@ -19,7 +28,7 @@ def mislabel(df, p):
 
 
 df = pd.read_csv('iris.csv')
-df['Names'] = mislabel(df, .5) #mislabels dataframe
+df['Names'] = mislabel(df, .0) #mislabels dataframe
 df_true = pd.read_csv('iris.csv') #df with true labels
 
 
@@ -37,11 +46,19 @@ features = df.columns[:4]
 # train['species'] contains the actual species names. Before we can use it,
 # we need to convert each species name into a digit. So, in this case there
 # are three species, which have been coded as 0, 1, or 2.
-y = pd.factorize(train['species'])[0]
+y = pd.factorize(train['Names'])[0]
 
-clf = RandomForestClassifier(n_jobs=2, random_state=0) #n_jobs: parralelizes
+clf = RandomForestClassifier(n_jobs=2, random_state=0) #Initializes RF classifier, n_jobs: parralelizes
+clf.fit(train[features], y) #trains the classifier
 
+#predicts with the trained model
+y_pred = clf.predict(test[features])
+y_true = pd.factorize(test['Names'])[0] #These are the true labels
+
+print(successRate(y_pred, y_true))
 
 
 print()
+
+
 
