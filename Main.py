@@ -1,25 +1,7 @@
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import pandas as pd
-import seaborn as sns
-from sklearn.decomposition import PCA, SparsePCA
-from sklearn.cluster import DBSCAN, KMeans, AgglomerativeClustering
-from sklearn.preprocessing import StandardScaler
-from scipy.cluster.hierarchy import dendrogram, linkage
-from scipy.stats import pointbiserialr
-from pandas.plotting import parallel_coordinates
-from sklearn.neighbors import NearestNeighbors
-from random import sample
-from numpy.random import uniform
-import numpy as np
-import math
 import random
-from math import isnan
-from math import isnan
-from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
-import scipy.spatial.distance as ssd
-from scipy.spatial import distance_matrix
 
 
 def mislabel(df, p):
