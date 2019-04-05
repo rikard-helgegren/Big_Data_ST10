@@ -17,10 +17,10 @@ def mislabel(df, p):
     return labels
 
 
-df_misl = pd.read_csv(r'C:\Users\arvid\Desktop\Skola\Skolår 3\Kandidatarbete\iris.csv')
+df_misl = pd.read_csv('iris.csv')
 df_misl['Names'] = mislabel(df_misl, .5)
 
-df_true = pd.read_csv(r'C:\Users\arvid\Desktop\Skola\Skolår 3\Kandidatarbete\iris.csv')
+df_true = pd.read_csv('iris.csv')
 
 print()
 
