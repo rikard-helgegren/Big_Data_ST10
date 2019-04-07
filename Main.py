@@ -86,7 +86,8 @@ def randomForestRandomMislabeling(df):
         p_vec.append(p)
         success_tmp = 0
         for j in range(0, n_mean):
-            # assign wether observations should be used for training or not.
+            #TODO:explain to rikard how this section works.
+            # assign wether observations should be used for training or not. 
             df['is_train'] = np.random.uniform(0, 1, len(df)) <= .75  # ~25% validerigsdata
             train, test = df[df['is_train'] == True], df[df['is_train'] == False]
 
