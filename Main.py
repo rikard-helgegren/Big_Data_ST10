@@ -125,17 +125,17 @@ def random_forest_mislabeling(df, type):
 def knn_mislabeling(df, type):
     success_vec = []
     p_vec = []
-    p_increment = 0.01
-    n_iter = 10
-    k_iter = 10
-    n_mean = 100
+    p_increment = 0.02
+    n_iter = 40
+    k_iter = 40
+    n_mean = 40
     p_mat = np.zeros([k_iter, n_iter])
     k_mat = np.zeros([k_iter, n_iter])
     success_map = np.zeros([k_iter, n_iter])
     for k in range(0, k_iter):
         p = 0
         for i in range(0, n_iter):
-            k_act = k*3+1
+            k_act = 2*k+1
             p_vec.append(p)
             p_mat[k,i] = p
             k_mat[k, i] = k_act
