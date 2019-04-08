@@ -34,8 +34,7 @@ def adversarial_mislabel(labels, p):
         if random.uniform(0, 1) < p:
             tmpSet = []
 
-            if labelSet[i] not 'Iris-setosa':
-                tmpSet.remove(labels[i])
+            if labels[i] != 'Iris-setosa':
                 labels[i] = 'Iris-setosa'
     return labels
 
@@ -97,7 +96,6 @@ def random_forest_random_mislabeling(df):
         p_vec.append(p)
         success_tmp = 0
         for j in range(0, n_mean):
-            #TODO:explain to rikard how this section works.
             # assign wether observations should be used for training or not. 
             df['is_train'] = np.random.uniform(0, 1, len(df)) <= .75  # ~25% validerigsdata
             train, test = df[df['is_train'] == True], df[df['is_train'] == False]
@@ -175,7 +173,6 @@ def random_forest_adversarial_mislabeling(df):
         p_vec.append(p)
         success_tmp = 0
         for j in range(0, n_mean):
-            #TODO:explain to rikard how this section works.
             # assign wether observations should be used for training or not. 
             df['is_train'] = np.random.uniform(0, 1, len(df)) <= .75  # ~25% validerigsdata
             train, test = df[df['is_train'] == True], df[df['is_train'] == False]
@@ -244,7 +241,7 @@ def knn_adversarial_mislabeling(df):
 #reads iris data
 df = pd.read_csv('iris.csv')
 
-success_map, p_mat, k_mat = knn_random_mislabeling(df)
+success_map, p_mat, k_mat = knn_adversarial_mislabeling(df)
 
 
 
