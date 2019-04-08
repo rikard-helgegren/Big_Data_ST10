@@ -67,7 +67,7 @@ def knn(k, train, test): # gör 3d!
 
     # predicts with the trained model
     y_pred = clf.predict(test[features])
-    y_true = pd.factorize(test['Names'])[0]# These are the true labels
+    y_true = pd.factorize(test['Names'])[0]# These are the true labelss
 
     return successRate(y_pred, y_true)
 
@@ -111,17 +111,17 @@ def randomForestRandomMislabeling(df):
 def knnRandomMislabeling(df):
     success_vec = []
     p_vec = []
-    p_increment = 0.01
+    p_increment = 0.05
     n_iter = 10
-    k_iter = 10
-    n_mean = 100
+    k_iter = 5
+    n_mean = 1000
     p_mat = np.zeros([k_iter, n_iter])
     k_mat = np.zeros([k_iter, n_iter])
     success_map = np.zeros([k_iter, n_iter])
     for k in range(0, k_iter):
         p = 0
         for i in range(0, n_iter):
-            k_act = k*3+1
+            k_act = k+1
             p_vec.append(p)
             p_mat[k,i] = p
             k_mat[k, i] = k_act
