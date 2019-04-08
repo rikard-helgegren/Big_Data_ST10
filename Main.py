@@ -39,7 +39,6 @@ def adversarial_mislabel(labels, p):
                 labels[i] = 'Iris-setosa'
     return labels
 
-
 def random_forest(train, test):
     # Show the number of observations for the test and training dataframes'
     #print('Number of observations in the training data:', len(train))
@@ -83,7 +82,9 @@ def knn(k, train, test): # gör 3d!
     return success_rate(y_pred, y_true)
 
 
-def random_forest_mislabeling(df, mislabelType):
+
+
+def random_forest_mislabeling(df, type):
     success_vec = []
     p_vec = []
     p = 0
@@ -104,11 +105,12 @@ def random_forest_mislabeling(df, mislabelType):
             for e in list(train['Names']):
                 labels.append(e)
 
-            #mislabels
-            if mislabelType is 'random':
+            #mislabels randomly
+            if type is 'random':
                 labels = mislabel(labels, p)
             else:
                 labels = adversarial_mislabel(labels, p)
+
             #replaces old labels in training data
             del train['Names']
             train.loc[:, 'Names'] = labels
@@ -120,8 +122,7 @@ def random_forest_mislabeling(df, mislabelType):
         print('Done with iteration ' + str(i + 1) + ' of ' + str(n_iter) + '.')
     return p_vec, success_vec
 
-
-def knn_mislabeling(df, mislabelType):
+def knn_mislabeling(df, type):
     success_vec = []
     p_vec = []
     p_increment = 0.01
@@ -146,14 +147,13 @@ def knn_mislabeling(df, mislabelType):
 
                 labels = []
                 for e in list(train['Names']):
-                    print(e)
                     labels.append(e)
 
-                    # mislabels
-                    if mislabelType is 'random':
-                        labels = mislabel(labels, p)
-                    else:
-                        labels = adversarial_mislabel(labels, p)
+                #mislabels randomly
+                if type is 'random':
+                    labels = mislabel(labels, p)
+                else:
+                    labels = adversarial_mislabel(labels, p)
 
                 #replaces old labels in training data
                 del train['Names']
@@ -166,7 +166,6 @@ def knn_mislabeling(df, mislabelType):
             p += p_increment
             print('Done with iteration ' + str(i + 1) + ' of ' + str(n_iter) + '.')
     return success_map, p_mat, k_mat
-
 
 #reads iris data
 df = pd.read_csv('iris.csv')
