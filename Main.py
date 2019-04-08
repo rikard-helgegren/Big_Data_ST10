@@ -28,6 +28,17 @@ def mislabel(labels, p):
             labels[i] = tmpSet[random.randint(0, 1)]
     return labels
 
+def adversarial_mislabel(labels, p):
+    labelSet = list(set(labels))
+    for i in range(0, len(labels)):
+        if random.uniform(0, 1) < p:
+            tmpSet = []
+
+            if labelSet[i] not 'Iris-setosa':
+                tmpSet.remove(labels[i])
+                labels[i] = 'Iris-setosa'
+    return labels
+
 
 def random_forest(train, test):
     # Show the number of observations for the test and training dataframes'
@@ -174,7 +185,7 @@ def random_forest_adversarial_mislabeling(df):
                 labels.append(e)
 
             #mislabels randomly
-            labels = mislabel(labels, p)
+            labels = adversarial_mislabel(labels, p)
 
             #replaces old labels in training data
             del train['Names']
@@ -215,7 +226,7 @@ def knn_adversarial_mislabeling(df):
                     labels.append(e)
 
                 #mislabels randomly
-                labels = mislabel(labels, p)
+                labels = adversarial_mislabel(labels, p)
 
                 #replaces old labels in training data
                 del train['Names']
