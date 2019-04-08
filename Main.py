@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 pd.options.mode.chained_assignment = None
 
-def successRate(pred, true):
+def success_rate(pred, true):
     n = len(pred)
     n_right = 0
     for i in range(0, n):
@@ -29,7 +29,7 @@ def mislabel(labels, p):
     return labels
 
 
-def randomForest(train, test):
+def random_forest(train, test):
     # Show the number of observations for the test and training dataframes'
     #print('Number of observations in the training data:', len(train))
     #print('Number of observations in the test data:', len(test))
@@ -49,7 +49,7 @@ def randomForest(train, test):
     y_pred = clf.predict(test[features])
     y_true = pd.factorize(test['Names'])[0]# These are the true labels
     #pd.crosstab(test['Names'], y_pred, rownames=['Actual Species'], colnames=['Predicted Species']) #confusion matrix
-    return successRate(y_pred, y_true)
+    return success_rate(y_pred, y_true)
 
 
 def knn(k, train, test): # gör 3d!
@@ -69,12 +69,12 @@ def knn(k, train, test): # gör 3d!
     y_pred = clf.predict(test[features])
     y_true = pd.factorize(test['Names'])[0]# These are the true labelss
 
-    return successRate(y_pred, y_true)
+    return success_rate(y_pred, y_true)
 
 
 
 
-def randomForestRandomMislabeling(df):
+def random_forest_random_mislabeling(df):
     success_vec = []
     p_vec = []
     p = 0
@@ -86,7 +86,8 @@ def randomForestRandomMislabeling(df):
         p_vec.append(p)
         success_tmp = 0
         for j in range(0, n_mean):
-            # assign wether observations should be used for training or not.
+            #TODO:explain to rikard how this section works.
+            # assign wether observations should be used for training or not. 
             df['is_train'] = np.random.uniform(0, 1, len(df)) <= .75  # ~25% validerigsdata
             train, test = df[df['is_train'] == True], df[df['is_train'] == False]
 
@@ -101,14 +102,92 @@ def randomForestRandomMislabeling(df):
             del train['Names']
             train.loc[:, 'Names'] = labels
 
-            success_tmp += (randomForest(train, test))
+            success_tmp += (random_forest(train, test))
 
         success_vec.append(success_tmp/n_mean)
         p += p_increment
         print('Done with iteration ' + str(i + 1) + ' of ' + str(n_iter) + '.')
     return p_vec, success_vec
 
-def knnRandomMislabeling(df):
+def knn_random_mislabeling(df):
+    success_vec = []
+    p_vec = []
+    p_increment = 0.01
+    n_iter = 10
+    k_iter = 10
+    n_mean = 100
+    p_mat = np.zeros([k_iter, n_iter])
+    k_mat = np.zeros([k_iter, n_iter])
+    success_map = np.zeros([k_iter, n_iter])
+    for k in range(0, k_iter):
+        p = 0
+        for i in range(0, n_iter):
+            k_act = k*3+1
+            p_vec.append(p)
+            p_mat[k,i] = p
+            k_mat[k, i] = k_act
+            success_tmp = 0
+            for j in range(0, n_mean):
+                # assign wether observations should be used for training or not.
+                df['is_train'] = np.random.uniform(0, 1, len(df)) <= .75  # ~25% validerigsdata
+                train, test = df[df['is_train'] == True], df[df['is_train'] == False]
+
+                labels = []
+                for e in list(train['Names']):
+                    labels.append(e)
+
+                #mislabels randomly
+                labels = mislabel(labels, p)
+
+                #replaces old labels in training data
+                del train['Names']
+                train.loc[:, 'Names'] = labels
+
+                success_tmp += (knn(k_act,train, test))
+
+            success_map[k,i] = success_tmp/n_mean
+            success_vec.append(success_tmp/n_mean)
+            p += p_increment
+            print('Done with iteration ' + str(i + 1) + ' of ' + str(n_iter) + '.')
+    return success_map, p_mat, k_mat
+
+
+def random_forest_adversarial_mislabeling(df):
+    success_vec = []
+    p_vec = []
+    p = 0
+    p_increment = 0.01
+    n_iter = 20
+    n_mean = 10
+
+    for i in range(0, n_iter):
+        p_vec.append(p)
+        success_tmp = 0
+        for j in range(0, n_mean):
+            #TODO:explain to rikard how this section works.
+            # assign wether observations should be used for training or not. 
+            df['is_train'] = np.random.uniform(0, 1, len(df)) <= .75  # ~25% validerigsdata
+            train, test = df[df['is_train'] == True], df[df['is_train'] == False]
+
+            labels = []
+            for e in list(train['Names']):
+                labels.append(e)
+
+            #mislabels randomly
+            labels = mislabel(labels, p)
+
+            #replaces old labels in training data
+            del train['Names']
+            train.loc[:, 'Names'] = labels
+
+            success_tmp += (random_forest(train, test))
+
+        success_vec.append(success_tmp/n_mean)
+        p += p_increment
+        print('Done with iteration ' + str(i + 1) + ' of ' + str(n_iter) + '.')
+    return p_vec, success_vec
+
+def knn_adversarial_mislabeling(df):
     success_vec = []
     p_vec = []
     p_increment = 0.05
@@ -154,7 +233,7 @@ def knnRandomMislabeling(df):
 #reads iris data
 df = pd.read_csv('iris.csv')
 
-success_map, p_mat, k_mat = knnRandomMislabeling(df)
+success_map, p_mat, k_mat = knn_random_mislabeling(df)
 
 
 
