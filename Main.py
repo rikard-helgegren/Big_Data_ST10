@@ -85,13 +85,12 @@ def knn(k, train, test): # gör 3d!
 
 
 def random_forest_mislabeling(df, type):
-    success_vec = []
     p_vec = []
     p = 0
-    p_increment = 0.01
-    n_iter = 20
+    p_increment = 0.02
+    n_iter = 40
     n_mean = 10
-
+    success_vec = np.zeros(n_iter)
     for i in range(0, n_iter):
         p_vec.append(p)
         success_tmp = 0
@@ -117,7 +116,7 @@ def random_forest_mislabeling(df, type):
 
             success_tmp += (random_forest(train, test))
 
-        success_vec.append(success_tmp/n_mean)
+        success_vec[i] = (success_tmp/n_mean)
         p += p_increment
         print('Done with iteration ' + str(i + 1) + ' of ' + str(n_iter) + '.')
     return p_vec, success_vec
@@ -127,7 +126,7 @@ def knn_mislabeling(df, type):
     p_vec = []
     p_increment = 0.02
     n_iter = 40
-    k_iter = 40
+    k_iter = 1
     n_mean = 40
     p_mat = np.zeros([k_iter, n_iter])
     k_mat = np.zeros([k_iter, n_iter])
@@ -170,13 +169,17 @@ def knn_mislabeling(df, type):
 #reads iris data
 df = pd.read_csv('iris.csv')
 
-success_map, p_mat, k_mat = knn_mislabeling(df, 'random')
+#success_map, p_mat, k_mat = knn_mislabeling(df, 'random')
+
+p_vec, success_vec = random_forest_mislabeling(df, 'random')
+p_vec_, succes_mat, k_mat = knn_mislabeling(df, 'random')
 
 
-
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-ax.plot_surface(Z = success_map, X = p_mat, Y = k_mat, cmap = 'magma')
+plt.plot(p_vec, success_vec)
+plt.plot(succes_mat[0,:], p_vec_[0,:])
+#fig = plt.figure()
+#ax = fig.add_subplot(111, projection='3d')
+#ax.plot_surface(Z = success_map, X = p_mat, Y = k_mat, cmap = 'magma')
 plt.show()
 print()
 
