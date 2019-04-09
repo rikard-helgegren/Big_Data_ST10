@@ -54,6 +54,7 @@ def adversarial_mislabel(labels, p):
 
     return labels
 
+
 def random_forest(train, test):
     # Show the number of observations for the test and training dataframes'
     #print('Number of observations in the training data:', len(train))
@@ -106,13 +107,13 @@ def random_forest_mislabeling(df, type):
     n_iter = 40
     n_mean = 10
     success_vec = np.zeros(n_iter)
+
     for i in range(0, n_iter):
         p_vec.append(p)
         success_tmp = 0
         for j in range(0, n_mean):
-            #TODO:explain to rikard how this section works.
             # assign wether observations should be used for training or not. 
-            df['is_train'] = np.random.uniform(0, 1, len(df)) <= .75  # ~25% validerigsdata
+            df['is_train'] = np.random.uniform(0, 1, len(df)) <= .75  # ~25% testingdata
             train, test = df[df['is_train'] == True], df[df['is_train'] == False]
 
             labels = []
@@ -190,8 +191,9 @@ p_vec, success_vec = random_forest_mislabeling(df, 'random')
 p_vec_, succes_mat, k_mat = knn_mislabeling(df, 'random')
 
 
-plt.plot(p_vec, success_vec)
-plt.plot(succes_mat[0,:], p_vec_[0,:])
+plt.plot(p_vec, success_vec,label='Random Forest (10)')
+plt.plot(succes_mat[0,:], p_vec_[0,:],label='kNN (k=3)')
+plt.legend()
 #fig = plt.figure()
 #ax = fig.add_subplot(111, projection='3d')
 #ax.plot_surface(Z = success_map, X = p_mat, Y = k_mat, cmap = 'magma')
