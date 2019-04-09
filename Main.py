@@ -31,12 +31,27 @@ def mislabel(labels, p):
 
 def adversarial_mislabel(labels, p):
     labelSet = list(set(labels))
+    setosa = 0
+    versicolor=0
+    virginica=0
+
+    
+    for j in range(0,len(labels)):
+        if labels[j] == 'Iris-setosa':
+            setosa += 1
+        elif labels[j] == 'Iris-versicolor':
+            versicolor += 1
+        elif labels[j] == 'Iris-virginica':
+            virginica += 1
+    frac = (setosa)/(virginica+setosa+versicolor)
+
     for i in range(0, len(labels)):
-        if random.uniform(0, 1) < p:
+        if random.uniform(0, 1) < p*frac:
             tmpSet = []
 
             if labels[i] != 'Iris-setosa':
                 labels[i] = 'Iris-setosa'
+
     return labels
 
 def random_forest(train, test):
