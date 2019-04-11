@@ -1,3 +1,14 @@
+'''
+Authors:
+        Arvid Wartenberg
+        Rikard Helgegren
+        Lina Hammargren
+
+Group: ST10
+
+'''
+
+
 #Module imports
 import matplotlib.pyplot as plt
 import numpy as np
