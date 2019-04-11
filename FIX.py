@@ -41,14 +41,27 @@ def clf(train, test, model, modelparam):
 
     return clf.score(test[test.columns[:4]],test['Names'], sample_weight=None)
 
+'''
+Simulates accuracy in classification model RF or KNN as a function of mislabeling
 
+@:param model: determines what model is to be used if == 1 --> random forest // if == 2 --> knn
+@:param modelparam: if model is RF, this is #trees; if KNN; this is K
+@:param mislabeltype: adversarial or random
+@:param p_increment: mislabeling probability step size
+@:param n_iter: number of iterations
+@:param n_mean: number of runs for one iteration over which mean is taken
+
+@:return p_vec: Mislabeling probabilities in a vector
+@:return accuracy_vec: Model accuracies corresponding to the probabilities
+
+'''
 def model_mislabeling(model, modelparam, mislabeltype, p_increment, n_iter, n_mean):
     p_vec = []
     p = 0
-    success_vec = np.zeros(n_iter)
+    accuracy_vec = np.zeros(n_iter)
     for i in range(0, n_iter):
         p_vec.append(p)
-        success_tmp = 0
+        accuracy = 0
         for j in range(0, n_mean):
             iris = datasets.load_iris()
             train = pd.DataFrame(iris.data[:, :4])
@@ -70,18 +83,18 @@ def model_mislabeling(model, modelparam, mislabeltype, p_increment, n_iter, n_me
             del train['Names']
             train.loc[:, 'Names'] = labels
 
-            success_tmp += (clf(train, test, model, modelparam))
+            accuracy += (clf(train, test, model, modelparam))
 
-        success_vec[i] = (success_tmp/n_mean)
+            accuracy_vec[i] = (accuracy/n_mean)
         p += p_increment
         print('Done with iteration ' + str(i + 1) + ' of ' + str(n_iter) + '.')
-    return p_vec, success_vec
+    return p_vec, accuracy_vec
 
-#model: 1 -> RF, 2 -> KNN, modelparam = (#trees for RF// K for KNN), TODO document
-p_vec, success_vec = model_mislabeling(model=2, modelparam = 10, mislabeltype = 'random',
+
+p_vec, accuracy_vec = model_mislabeling(model=2, modelparam = 10, mislabeltype = 'random',
                                        p_increment = 0.025, n_iter = 40, n_mean = 10)
 
-plt.plot(p_vec, success_vec, 'b-.', lw=2, label='KNN Accuracy (K = 10)')
+plt.plot(p_vec, accuracy_vec, 'b-.', lw=2, label='KNN Accuracy (K = 10)')
 plt.title('KNN vs RF; random mislabeling')
 plt.legend(loc='upper right')
 plt.show()
