@@ -30,13 +30,11 @@ def mislabel(labels, p):
     return labels
 
 '''
-    Mislabels a fraction p of the labels from all
-     sets except the first one to the first class
-
+    Mislabels a fraction p of the labels 'versicolor' and 'virginica' to
+    class 'setosa'
 
     @:params: labels, the set of all labels to be mislabeled
     @:params: p, the fraction of the whole set that should be mislabeled
-
 
     @:return: labels, mislabeled labels
 '''
