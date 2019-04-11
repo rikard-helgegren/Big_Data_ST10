@@ -78,14 +78,11 @@ def model_mislabeling(model, modelparam, mislabeltype, p_increment, n_iter, n_me
     return p_vec, success_vec
 
 #model: 1 -> RF, 2 -> KNN, modelparam = (#trees for RF// K for KNN), TODO document
-p_vec, success_vec = model_mislabeling(model=2, modelparam = 10, mislabeltype = 'adversarial',
+p_vec, success_vec = model_mislabeling(model=2, modelparam = 10, mislabeltype = 'random',
                                        p_increment = 0.025, n_iter = 40, n_mean = 10)
-p_vec2, success_vec2 = model_mislabeling(model=1, modelparam = 100, mislabeltype = 'adversarial',
-                                       p_increment = 0.025, n_iter = 40, n_mean = 4)
 
 plt.plot(p_vec, success_vec, 'b-.', lw=2, label='KNN Accuracy (K = 10)')
-plt.plot(p_vec2, success_vec2, '--', lw=2, label='RF Accuracy (100 trees)')
-plt.title('KNN vs RF; adversarial mislabeling')
+plt.title('KNN vs RF; random mislabeling')
 plt.legend(loc='upper right')
 plt.show()
 print()

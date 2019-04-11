@@ -6,6 +6,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from sklearn import datasets
 pd.options.mode.chained_assignment = None
 
 def success_rate(pred, true):
@@ -91,11 +92,8 @@ def knn(k, train, test): # gör 3d!
     clf = KNeighborsClassifier(n_neighbors=k)  # Initializes KNN classifier, n_jobs: parralelizes
     clf.fit(train[features], y)  # trains the classifier
 
-    # predicts with the trained model
-    y_pred = clf.predict(test[features])
-    y_true = pd.factorize(test['Names'])[0]# These are the true labelss
 
-    return success_rate(y_pred, y_true)
+    return clf.score(test[features], test['labels'], sample_weight=None)
 
 
 
