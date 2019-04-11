@@ -155,11 +155,14 @@ def model_mislabeling(model, modelparam, mislabeltype, p_increment, n_iter, n_me
     return p_vec, accuracy_vec
 
 
+
+#gets p_vec, accuracy_vec for chosen model and params..
 p_vec, accuracy_vec = model_mislabeling(model=2, modelparam = 10, mislabeltype = 'random',
                                        p_increment = 0.025, n_iter = 40, n_mean = 10)
 
+
+#plots results
 plt.plot(p_vec, accuracy_vec, 'b-.', lw=2, label='KNN Accuracy (K = 10)')
 plt.title('KNN vs RF; random mislabeling')
 plt.legend(loc='upper right')
 plt.show()
-print()
