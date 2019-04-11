@@ -10,6 +10,14 @@ from mpl_toolkits.mplot3d import Axes3D
 pd.options.mode.chained_assignment = None
 
 
+'''
+     Mislabels a fraction p of the labels
+
+    @:params: labels, the set of all labels to be mislabeled
+    @:params: p, the fraction of the whole set that should be mislabeled
+
+    @:return: labels, mislabeled labels
+'''
 def mislabel(labels, p):
     labelSet = list(set(labels))
     for i in range(0, len(labels)):
@@ -21,7 +29,17 @@ def mislabel(labels, p):
             labels[i] = tmpSet[random.randint(0, 1)]
     return labels
 
+'''
+    Mislabels a fraction p of the labels from all
+     sets except the first one to the first class
 
+
+    @:params: labels, the set of all labels to be mislabeled
+    @:params: p, the fraction of the whole set that should be mislabeled
+
+
+    @:return: labels, mislabeled labels
+'''
 def adversarial_mislabel(labels, p):
     for i in range(0, len(labels)):
         if random.uniform(0, 1) < p:
