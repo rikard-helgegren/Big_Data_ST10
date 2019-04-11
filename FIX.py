@@ -48,15 +48,29 @@ def adversarial_mislabel(labels, p):
     return labels
 
 
+
+'''
+Trains a classifier on training data and scores it on test data (RF or KNN)
+
+@:param train: training data
+@:param test: test data
+@:param model: determines what model is to be used if == 1 --> random forest // if == 2 --> knn
+@:param modelparam: if model is RF, this is #trees; if KNN; this is K
+
+@:returns: Model accuracy when predicting on test data
+'''
 def clf(train, test, model, modelparam):
+
+    #initializes classifier
     if model == 1:
         clf = RandomForestClassifier(n_jobs=2, random_state=0, n_estimators=modelparam)  # Initializes RF classifier, n_jobs: parralelizes
     elif model == 2:
         clf = KNeighborsClassifier(n_neighbors=modelparam)
 
-
+    #trains classifier
     clf.fit(train[train.columns[:4]], train['Names'])  # trains the classifier
 
+    #returns accuracy
     return clf.score(test[test.columns[:4]],test['Names'], sample_weight=None)
 
 '''
@@ -71,16 +85,23 @@ Simulates accuracy in classification model RF or KNN as a function of mislabelin
 
 @:return p_vec: Mislabeling probabilities in a vector
 @:return accuracy_vec: Model accuracies corresponding to the probabilities
-
 '''
 def model_mislabeling(model, modelparam, mislabeltype, p_increment, n_iter, n_mean):
+
+    #initializing p_vec and accuracy_vec
     p_vec = []
     p = 0
     accuracy_vec = np.zeros(n_iter)
+
+    #Runs iterations over probabilities
     for i in range(0, n_iter):
         p_vec.append(p)
         accuracy = 0
+
+        #trains n_mean classifiers and takes mean of accuracy
         for j in range(0, n_mean):
+
+            #loads iris data and divides into training and test sets
             iris = datasets.load_iris()
             train = pd.DataFrame(iris.data[:, :4])
             train['Names'] = iris.target
@@ -88,6 +109,7 @@ def model_mislabeling(model, modelparam, mislabeltype, p_increment, n_iter, n_me
             train = train.drop(test.index)
 
 
+            #mislabels in training set
             labels = []
             for e in list(train['Names']):
                 labels.append(e)
@@ -101,11 +123,18 @@ def model_mislabeling(model, modelparam, mislabeltype, p_increment, n_iter, n_me
             del train['Names']
             train.loc[:, 'Names'] = labels
 
+
             accuracy += (clf(train, test, model, modelparam))
 
-            accuracy_vec[i] = (accuracy/n_mean)
+        #appends current average accuracy to accuracy vec
+        accuracy_vec[i] = (accuracy/n_mean)
+
+        #increases mislabeling probability
         p += p_increment
+
         print('Done with iteration ' + str(i + 1) + ' of ' + str(n_iter) + '.')
+
+    #return statement
     return p_vec, accuracy_vec
 
 
