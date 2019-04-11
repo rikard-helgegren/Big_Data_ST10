@@ -1,3 +1,4 @@
+#Module imports
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -6,7 +7,6 @@ from sklearn import datasets
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 pd.options.mode.chained_assignment = None
 
 
@@ -19,14 +19,26 @@ pd.options.mode.chained_assignment = None
     @:return: labels, mislabeled labels
 '''
 def mislabel(labels, p):
+
+    #set of unique elements in labels
     labelSet = list(set(labels))
+
+    #loops over all labels
     for i in range(0, len(labels)):
+
+        #randomizes wether index i should be mislabeled
         if random.uniform(0, 1) < p:
+
+            #tmpSet is made, containing all labels except the true label
             tmpSet = []
             for j in range(0,len(labelSet)):
                 tmpSet.append(labelSet[j])
             tmpSet.remove(labels[i])
+
+            #new false label is set for index i
             labels[i] = tmpSet[random.randint(0, 1)]
+
+    #return statement
     return labels
 
 '''
@@ -39,10 +51,17 @@ def mislabel(labels, p):
     @:return: labels, mislabeled labels
 '''
 def adversarial_mislabel(labels, p):
+
+    #loops over all labels
     for i in range(0, len(labels)):
+
+        #randomizes wether label at index i should be mislabeled
         if random.uniform(0, 1) < p:
+
+            #label at index i is set to 0
             labels[i] = 0
 
+    #return statement
     return labels
 
 
